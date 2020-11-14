@@ -29,6 +29,8 @@ bot.on('ready', function(e) {
     roleClaim(bot)
 });
 
+//Hello team
+
 bot.on('voiceStateUpdate', (oldMember, newMember) => {
     if (!bot.guilds.cache.get('279347302752321547').voice) return;
     var botconnection = bot.guilds.cache.get('279347302752321547').voice.connection;
