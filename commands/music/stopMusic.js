@@ -14,12 +14,10 @@ class stopMusic extends commando.Command
 
     async run(message, args)
     {
-        if (message.guild.voiceConnection)
+        if (message.guild.voice.connection)
         {
-            if (message.guild.voiceConnection.dispatcher){
-                var server = servers[message.guild.id];
-                message.guild.voiceConnection.dispatcher.end();
-                server.queue.shift();
+            if (message.guild.voice.connection.dispatcher){
+                message.guild.voice.connection.dispatcher.destroy();
             } else{
                 message.reply("I don't think I'm playing anything at the moment");
             }

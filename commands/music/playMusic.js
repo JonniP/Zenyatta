@@ -1,18 +1,19 @@
 const commando = require('discord.js-commando');
-const YTDL = require('ytdl-core');
+const ytdl = require('discord-ytdl-core');
 
-function Play(connection, message)
+function Play(connection, url)
 {
-    var server = servers[message.guild.id];
-    server.dispatcher = connection.playStream(YTDL(server.queue[0], {filter: "audioonly"}));
-    server.queue.shift();
-    server.dispatcher.on("end", function(){
-        if(server.queue[0])
-        {
-            Play(connection, message);
-        }
+    let stream = ytdl(url, {
+        filter: "audioonly",
+        opusEncoded: true,
+        encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200']
     });
+        
+    let dispatcher = connection.play(stream, {
+            type: "opus"
+        });
 }
+
 
 class playMusic extends commando.Command
 {
@@ -28,43 +29,20 @@ class playMusic extends commando.Command
 
     async run(message, args)
     {
-        return;
         if (args == ""){
             message.reply("No link given :gitgud:");
             return;
         }
-        if (message.member.channelID)
+        if (message.member.guild.voice.channelID)
         {
             if (!message.guild.voice.connection)
             {
-                if (!servers[message.guild.id]){
-                    servers[message.guild.id] = {queue: []}
-                }
-                message.member.voice.channel.join()
-                .then(connection =>{
-                var server = servers[message.guild.id];
-                server.queue.push(args);
-                Play(connection, message);})
-            } else if (message.member.voice.channel.name != message.guild.voice.connection.channel.name){
-                message.guild.voice.connection.disconnect();
-                if (!servers[message.guild.id]){
-                    servers[message.guild.id] = {queue: []}
-                }
-                message.member.voice.channel.join()
-                .then(connection =>{
-                var server = servers[message.guild.id];
-                server.queue.push(args);
-                Play(connection, message);})
+                message.reply("Add me to your voice channel first with !join")
             } else {
-                if (message.guild.voice.connection.dispatcher){
-                    message.guild.voice.connection.dispatcher.end();
+                if (message.member.guild.voice.connection.dispatcher){
+                    message.member.guild.voice.connection.dispatcher.destroy();
                 }
-                if (!servers[message.guild.id]){
-                    servers[message.guild.id] = {queue: []}
-                }
-                var server = servers[message.guild.id];
-                server.queue.push(args);
-                Play(message.member.voice.channel.connection, message);
+                Play(message.member.guild.voice.connection, args);
             }
         }
         else

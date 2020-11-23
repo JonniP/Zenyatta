@@ -11,6 +11,9 @@ module.exports = (client) => {
     lol: 'League of Legends',
     impostor: 'Among Us',
     mtg: 'Magic the Gathering',
+    cs: 'Counter-Strike',
+    minecraft: 'Minecraft',
+    wt: 'War Thunder'
   }
 
   const reactions = []
@@ -52,6 +55,15 @@ module.exports = (client) => {
         break
       case "World of Warcraft":
         roleName = "Lorewalker Cho"
+        break
+      case "Counter-Strike":
+        roleName = "RushB"
+        break
+      case "War Thunder":
+        roleName = "Sherman"
+        break
+      case "Minecraft":
+        roleName = "Steve"
         break
       default:
         console.log("Switch failed")
